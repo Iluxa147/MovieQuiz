@@ -1,23 +1,5 @@
 import UIKit
 
-struct QuizQuestion {
-    let imageName: String
-    let text: String
-    let correctAnswer: Bool
-}
-
-struct QuizStepViewModel {
-  let posterImage: UIImage
-  let question: String
-  let questionNumber: String
-}
-
-struct QuizResultsViewModel {
-  let title: String
-  let scoreText: String
-  let buttonText: String
-}
-
 final class MovieQuizViewController: UIViewController {
     // MARK: - UI
     @IBOutlet private weak var counterLabel: UILabel!
@@ -27,6 +9,25 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private weak var yesButton: UIButton!
     
     // MARK: - State
+    
+    private struct QuizQuestion {
+        let imageName: String
+        let text: String
+        let correctAnswer: Bool
+    }
+
+    private struct QuizStepViewModel {
+      let posterImage: UIImage
+      let question: String
+      let questionNumber: String
+    }
+
+    private struct QuizResultsViewModel {
+      let title: String
+      let scoreText: String
+      let buttonText: String
+    }
+    
     private var currentQuestionIndex = 0
     private var correctAnswersCount = 0
     
@@ -123,7 +124,7 @@ final class MovieQuizViewController: UIViewController {
         }
         
         alert.addAction(action)
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Mock
