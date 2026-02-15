@@ -12,6 +12,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
+    private var statisticService: StatisticServiceProtocol?
+    private var alertPresenter = AlertPresenter()
     private var currentQuestion: QuizQuestion?
     
     private var currentQuestionIndex = 0 // TODO ?rly need?
@@ -34,6 +36,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        statisticService = StatisticService()
         
         let questionFactory = QuestionFactory()
         questionFactory.setup(delegate: self)
@@ -104,9 +108,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
+            guard let statisticService = statisticService else { return }
+            statisticService.store(correctAnswersCount: correctAnswersCount, totalQuestionsCount: questionsAmount)
+            
+            let scoreText = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date.dateTimeString)\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
             let resultModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
-                scoreText: "Ваш результат: \(correctAnswersCount)/\(questionsAmount)",
+                scoreText: scoreText,
                 buttonText: "Сыграть еще раз"
             )
             show(result: resultModel)
@@ -125,6 +133,20 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func show(result: QuizResultsViewModel) {
+        //let message = presenter.makeResultMessage()
+        let message = result.scoreText
+        let alertModel = AlertModel(title: result.title, message: message, buttonText: result.buttonText) { [weak self] in
+            guard let self = self else { return }
+            
+            //self.presenter.restartGame()
+            self.currentQuestionIndex = 0
+            self.correctAnswersCount = 0
+            self.questionFactory?.requestNextQuestion()
+        }
+        
+        alertPresenter.show(at: self, alertModel: alertModel)
+        
+        /*
         let alert = UIAlertController(
             title: result.title,
             message: result.scoreText,
@@ -147,5 +169,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+        */
     }
 }
