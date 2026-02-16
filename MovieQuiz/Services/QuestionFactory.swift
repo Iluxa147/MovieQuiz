@@ -52,12 +52,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 correctAnswer: false)
         ]
     
-    weak var delegate: QuestionFactoryDelegate?
-    
-    func setup(delegate: QuestionFactoryDelegate) {
-        self.delegate = delegate
-    }
-    
+    // MARK: - QuestionFactoryProtocol
     func requestNextQuestion() {
         guard let index = (0..<questions.count).randomElement() else {
             delegate?.didReceiveNextQuestion(question: nil)
@@ -66,5 +61,13 @@ final class QuestionFactory: QuestionFactoryProtocol {
         
         let question = questions[safe: index]
         delegate?.didReceiveNextQuestion(question: question)
+    }
+    
+    // MARK: - Public
+    
+    weak var delegate: QuestionFactoryDelegate?
+    
+    func setup(delegate: QuestionFactoryDelegate) {
+        self.delegate = delegate
     }
 }

@@ -16,8 +16,20 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var alertPresenter = AlertPresenter()
     private var currentQuestion: QuizQuestion?
     
-    private var currentQuestionIndex = 0 // TODO ?rly need?
+    private var currentQuestionIndex = 0
     private var correctAnswersCount = 0
+    
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        statisticService = StatisticService()
+        
+        let questionFactory = QuestionFactory()
+        questionFactory.setup(delegate: self)
+        self.questionFactory = questionFactory
+        self.questionFactory?.requestNextQuestion()
+    }
     
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -31,26 +43,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.show(quizStep: stepViewModel)
         }
-    }
-    
-    // MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        statisticService = StatisticService()
-        
-        let questionFactory = QuestionFactory()
-        questionFactory.setup(delegate: self)
-        self.questionFactory = questionFactory
-        
-        self.questionFactory?.requestNextQuestion()
-        
-        // TODO delete
-        //if let firstQuestion = questionFactory.requestNewQuestion() {
-        //    currentQuestion = firstQuestion
-        //    let stepViewModel = convert(model: firstQuestion)
-        //    show(quizStep: stepViewModel)
-        //}
     }
     
     // MARK: - Actions
@@ -108,67 +100,38 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            guard let statisticService = statisticService else { return }
-            statisticService.store(correctAnswersCount: correctAnswersCount, totalQuestionsCount: questionsAmount)
+            statisticService?.store(correctAnswersCount: correctAnswersCount, totalQuestionsCount: questionsAmount)
             
-            let scoreText = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date.dateTimeString)\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
             let resultModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
-                scoreText: scoreText,
+                scoreText: makeResultMessage(),
                 buttonText: "Сыграть еще раз"
             )
             show(result: resultModel)
         } else {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
-            
-            // TODO delete
-            //if let nextQuestion = questionFactory.requestNextQuestion() {
-            //    currentQuestionIndex += 1
-            //    currentQuestion = nextQuestion
-            //    let stepViewModel = convert(model: nextQuestion)
-            //    show(quizStep: stepViewModel)
-            //}
         }
     }
     
     private func show(result: QuizResultsViewModel) {
-        //let message = presenter.makeResultMessage()
-        let message = result.scoreText
-        let alertModel = AlertModel(title: result.title, message: message, buttonText: result.buttonText) { [weak self] in
+        let alertModel = AlertModel(title: result.title, message: result.scoreText, buttonText: result.buttonText) { [weak self] in
             guard let self = self else { return }
             
-            //self.presenter.restartGame()
             self.currentQuestionIndex = 0
             self.correctAnswersCount = 0
             self.questionFactory?.requestNextQuestion()
         }
         
         alertPresenter.show(at: self, alertModel: alertModel)
+    }
+    
+    private func makeResultMessage() -> String {
+        let currentGameResultMsg = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)"
+        guard let statisticService = statisticService else { return currentGameResultMsg }
         
-        /*
-        let alert = UIAlertController(
-            title: result.title,
-            message: result.scoreText,
-            preferredStyle: .alert)
+        let fullResultsMsg = "\(currentGameResultMsg)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date.dateTimeString)\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
         
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            
-            self.currentQuestionIndex = 0
-            self.correctAnswersCount = 0
-            self.questionFactory?.requestNextQuestion()
-            
-            // TODO delete
-            //if let firstQuestion = self.questionFactory.requestNewQuestion() {
-            //    self.currentQuestion = firstQuestion
-            //    let stepViewModel = self.convert(model: firstQuestion)
-            //    self.show(quizStep: stepViewModel)
-            //}
-        }
-        
-        alert.addAction(action)
-        present(alert, animated: true, completion: nil)
-        */
+        return fullResultsMsg
     }
 }
