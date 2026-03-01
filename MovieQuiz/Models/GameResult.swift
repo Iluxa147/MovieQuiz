@@ -13,6 +13,6 @@ struct GameResult {
     let date: Date
     
     func isBetterThan(_ resultToCheck: GameResult) -> Bool {
-        return correct > resultToCheck.correct
+        correct > resultToCheck.correct
     }
 }

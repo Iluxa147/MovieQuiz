@@ -33,9 +33,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else {
-            return
-        }
+        guard let question else { return }
         
         currentQuestion = question
         let stepViewModel = convert(model: question)
@@ -130,7 +128,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let currentGameResultMsg = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)"
         guard let statisticService = statisticService else { return currentGameResultMsg }
         
-        let fullResultsMsg = "\(currentGameResultMsg)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \(statisticService.bestGame.date.dateTimeString)\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+        let fullResultsMsg = """
+        \(currentGameResultMsg)
+        Количество сыграных квизов: \(statisticService.gamesCount)
+        Рекорд: \(statisticService.bestGame.correct)/\(statisticService.bestGame.total) \
+        \(statisticService.bestGame.date.dateTimeString)
+        Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
+        """
         
         return fullResultsMsg
     }
