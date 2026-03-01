@@ -26,10 +26,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         statisticService = StatisticService()
         
-        let questionFactory = QuestionFactory()
-        questionFactory.setup(delegate: self)
+        let questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        //questionFactory.setup(delegate: self) // TODO delete
         self.questionFactory = questionFactory
-        self.questionFactory?.requestNextQuestion()
+        
+        showLoadingIndicator()
+        self.questionFactory?.loadData()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -99,7 +101,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let stepViewModel = QuizStepViewModel(
-            posterImage: UIImage(named: model.imageName) ?? UIImage(),
+            posterImage: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)"
         )
