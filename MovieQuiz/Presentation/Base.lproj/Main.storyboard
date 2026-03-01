@@ -107,6 +107,9 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="cmu-Ao-00c">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
@@ -114,10 +117,13 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="VIs-xv-7Iy" secondAttribute="bottom" id="Hil-RZ-aJt"/>
                             <constraint firstItem="VIs-xv-7Iy" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="LZk-1e-R5q"/>
                             <constraint firstAttribute="trailing" secondItem="VIs-xv-7Iy" secondAttribute="trailing" constant="20" id="OcZ-YV-PhP"/>
+                            <constraint firstItem="cmu-Ao-00c" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="gJw-Tk-vN1"/>
+                            <constraint firstItem="cmu-Ao-00c" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="iPa-p8-83t"/>
                             <constraint firstItem="VIs-xv-7Iy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="rhq-SC-tOL"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="cmu-Ao-00c" id="RGM-Kr-aHi"/>
                         <outlet property="counterLabel" destination="ZuV-3C-wKH" id="57v-Pt-TfM"/>
                         <outlet property="noButton" destination="Cth-UA-SkQ" id="5Aj-hN-QX4"/>
                         <outlet property="posterImageView" destination="37n-rS-L3L" id="ESA-td-Lsu"/>
