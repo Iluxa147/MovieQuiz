@@ -27,7 +27,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         statisticService = StatisticService()
         
         let questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        //questionFactory.setup(delegate: self) // TODO delete
         self.questionFactory = questionFactory
         
         showLoadingIndicator()
@@ -59,12 +58,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Actions
     
     @IBAction private func noButtonUp(_ sender: UIButton) {
-        guard let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion else { return }
         showAnswerResult(isCorrect: !currentQuestion.correctAnswer)
     }
     
     @IBAction private func yesButtonUp(_ sender: UIButton) {
-        guard let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion else { return }
         showAnswerResult(isCorrect: currentQuestion.correctAnswer)
     }
     
@@ -76,7 +75,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func hideLoadingIndicator() {
-        //activityIndicator.stopAnimating()
         activityIndicator.isHidden = true
     }
     
@@ -84,11 +82,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         hideLoadingIndicator()
         
         let alertModel = AlertModel(title: "Ошибка", message: message, buttonText: "Попробовать еще раз") { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
             self.currentQuestionIndex = 0
             self.correctAnswersCount = 0
-            self.questionFactory?.requestNextQuestion()
+            
+            showLoadingIndicator()
+            self.questionFactory?.loadData()
         }
         
         alertPresenter.show(at: self, alertModel: alertModel)
@@ -128,7 +128,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         setAnswerButtonsUsable(state: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.showNextQuestionOrResults()
         }
     }
@@ -151,7 +151,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func show(result: QuizResultsViewModel) {
         let alertModel = AlertModel(title: result.title, message: result.scoreText, buttonText: result.buttonText) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
             self.currentQuestionIndex = 0
             self.correctAnswersCount = 0
@@ -163,7 +163,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func makeResultMessage() -> String {
         let currentGameResultMsg = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)"
-        guard let statisticService = statisticService else { return currentGameResultMsg }
+        guard let statisticService else { return currentGameResultMsg }
         
         let fullResultsMsg = """
         \(currentGameResultMsg)

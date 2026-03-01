@@ -54,16 +54,14 @@ final class QuestionFactory: QuestionFactoryProtocol {
      ]
      */
     
-    // MARK: - Private
-    private let moviesLoader: MoviesLoading
+    // MARK: - Private fields
+    private let moviesLoader: MoviesLoadingProtocol
     private weak var delegate: QuestionFactoryDelegate?
     private var movies: [MostPopularMovie] = []
     
-    // MARK: - Public
+    // MARK: - Public members
     
-    // weak var delegate: QuestionFactoryDelegate?
-    
-    init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?) {
+    init(moviesLoader: MoviesLoadingProtocol, delegate: QuestionFactoryDelegate?) {
         self.moviesLoader = moviesLoader
         self.delegate = delegate
     }
@@ -78,7 +76,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
             
             var imageData = Data()
             do {
-                imageData = try Data(contentsOf: movie.imageURL)
+                imageData = try Data(contentsOf: movie.resizedUrl)
             } catch {
                 print("Failed to load image")
             }
@@ -91,7 +89,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
                                         correctAnswer: correctAnswer)
             
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.delegate?.didReceiveNextQuestion(question: question)
             }
         }
@@ -111,10 +109,5 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 }
             }
         }
-    }
-    
-    // TODO delete?
-    func setup(delegate: QuestionFactoryDelegate) {
-        self.delegate = delegate
     }
 }
