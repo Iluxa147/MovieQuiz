@@ -11,13 +11,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - State
     
-    private let questionsAmount: Int = 10
+    //private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol?
+    private let presenter = MovieQuizPresenter()
     private var alertPresenter = AlertPresenter()
     private var currentQuestion: QuizQuestion?
     
-    private var currentQuestionIndex = 0
+    //private var currentQuestionIndex = 0
     private var correctAnswersCount = 0
     
     // MARK: - Lifecycle
@@ -39,7 +40,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question else { return }
         
         currentQuestion = question
-        let stepViewModel = convert(model: question)
+        let stepViewModel = presenter.convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quizStep: stepViewModel)
@@ -84,7 +85,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let alertModel = AlertModel(title: "Ошибка", message: message, buttonText: "Попробовать еще раз") { [weak self] in
             guard let self else { return }
             
-            self.currentQuestionIndex = 0
+            self.presenter.resetQuestionIndex()
+            //self.currentQuestionIndex = 0
             self.correctAnswersCount = 0
             
             showLoadingIndicator()
@@ -99,6 +101,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         yesButton.isUserInteractionEnabled = state
     }
     
+    /*
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let stepViewModel = QuizStepViewModel(
             posterImage: UIImage(data: model.image) ?? UIImage(),
@@ -108,12 +111,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         return stepViewModel
     }
+     */
     
     private func show(quizStep: QuizStepViewModel) {
         setAnswerButtonsUsable(state: true)
         
         counterLabel.text = quizStep.questionNumber
-        posterImageView.image = quizStep.posterImage
+        posterImageView.image = UIImage(data: quizStep.posterImage) ?? UIImage()
         posterImageView.layer.borderWidth = 0
         questionLabel.text = quizStep.question
     }
@@ -134,8 +138,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func showNextQuestionOrResults() {
-        if currentQuestionIndex == questionsAmount - 1 {
-            statisticService?.store(correctAnswersCount: correctAnswersCount, totalQuestionsCount: questionsAmount)
+        if presenter.isLastQuestion() {
+            statisticService?.store(correctAnswersCount: correctAnswersCount,
+                                    totalQuestionsCount: presenter.questionsAmount)
             
             let resultModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
@@ -144,7 +149,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             )
             show(result: resultModel)
         } else {
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             questionFactory?.requestNextQuestion()
         }
     }
@@ -153,7 +158,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let alertModel = AlertModel(title: result.title, message: result.scoreText, buttonText: result.buttonText) { [weak self] in
             guard let self else { return }
             
-            self.currentQuestionIndex = 0
+            self.presenter.resetQuestionIndex()
             self.correctAnswersCount = 0
             self.questionFactory?.requestNextQuestion()
         }
@@ -162,7 +167,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func makeResultMessage() -> String {
-        let currentGameResultMsg = "Ваш результат: \(correctAnswersCount)/\(questionsAmount)"
+        let currentGameResultMsg = "Ваш результат: \(correctAnswersCount)/\(presenter.questionsAmount)"
         guard let statisticService else { return currentGameResultMsg }
         
         let fullResultsMsg = """
