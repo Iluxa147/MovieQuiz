@@ -17,6 +17,7 @@
 		AD77F5742857F8810062FB14 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD77F5732857F8810062FB14 /* Date+Extensions.swift */; };
 		AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7AFA542836189F00399704 /* Array+Extensions.swift */; };
 		C883DF792F655E9B005954A6 /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883DF782F655E96005954A6 /* MovieQuizPresenter.swift */; };
+		C883DF7B2F65959F005954A6 /* MovieQuizViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883DF7A2F65959F005954A6 /* MovieQuizViewControllerProtocol.swift */; };
 		C8917CD52F42456300272FC0 /* QuestionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8917CD42F42456300272FC0 /* QuestionFactory.swift */; };
 		C8917CD72F4246C800272FC0 /* QuizStepViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8917CD62F4246C800272FC0 /* QuizStepViewModel.swift */; };
 		C8917CD92F4246DA00272FC0 /* QuizResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8917CD82F4246DA00272FC0 /* QuizResultsViewModel.swift */; };
@@ -67,6 +68,7 @@
 		C883DF5A2F64DE32005954A6 /* MovieQuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieQuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C883DF6D2F64E4C6005954A6 /* MovieQuizUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieQuizUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C883DF782F655E96005954A6 /* MovieQuizPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizPresenter.swift; sourceTree = "<group>"; };
+		C883DF7A2F65959F005954A6 /* MovieQuizViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizViewControllerProtocol.swift; sourceTree = "<group>"; };
 		C8917CD42F42456300272FC0 /* QuestionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactory.swift; sourceTree = "<group>"; };
 		C8917CD62F4246C800272FC0 /* QuizStepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizStepViewModel.swift; sourceTree = "<group>"; };
 		C8917CD82F4246DA00272FC0 /* QuizResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultsViewModel.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 		6113423A2B701CF8003FC2A4 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C883DF782F655E96005954A6 /* MovieQuizPresenter.swift */,
 				C8917CD42F42456300272FC0 /* QuestionFactory.swift */,
 				C8917CDC2F424D1C00272FC0 /* QuestionFactoryProtocol.swift */,
 				C8917CDE2F4255D100272FC0 /* QuestionFactoryDelegate.swift */,
@@ -145,7 +148,7 @@
 		8F4738322848DE2A005DF65E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				C883DF782F655E96005954A6 /* MovieQuizPresenter.swift */,
+				C883DF7A2F65959F005954A6 /* MovieQuizViewControllerProtocol.swift */,
 				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
 				C8917CE22F42685800272FC0 /* AlertPresenter.swift */,
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
@@ -375,6 +378,7 @@
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				C8917CDD2F424D1C00272FC0 /* QuestionFactoryProtocol.swift in Sources */,
 				C8917CE72F427B0100272FC0 /* GameResult.swift in Sources */,
+				C883DF7B2F65959F005954A6 /* MovieQuizViewControllerProtocol.swift in Sources */,
 				C8D3E1F12F54B513000D018C /* NetworkClient.swift in Sources */,
 				C8D3E1F52F54B80E000D018C /* MoviesLoader.swift in Sources */,
 				C8917CDF2F4255D100272FC0 /* QuestionFactoryDelegate.swift in Sources */,
@@ -494,7 +498,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -550,7 +554,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
